@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>Real time web chat</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+<div ng-app="" ng-controller="ChatController">
+
+    Name: <input type="text" ng-model="model.userName"><br>
+    <ul>
+        <li ng-Repeat="msg in model.messages">
+            [{{ msg.user }}] - {{ msg.message }}
+        </li>
+    </ul>
+    <form ng-submit="sendMessage()">
+        <input type="text" ng-model="model.currentMsg"><button ng-click="sendMessage()">Send</button>
+    </form>
+</div>
+
+<script>
+    function ChatController($scope, $timeout) {
+        var socket = io.connect('http://localhost:3700');
+
+        $scope.model = {
+            userName: 'user' + Math.floor(Math.random()*1000).toString(),
+            messages: [],
+            currentMsg: ''
+        };
+        socket.on('message', function (data) {
+            console.log('got message!');
+            if ( data.message ) {
+                data.user = data.user || 'SERVER';
+                $scope.model.messages.push(data);
+                // Angular is unaware of data updates outside the "angular world,
+                // the timeout will force a new digest cycle.
+                $timeout(function () {}); 
+            } else {
+                console.error("There is a problem: ", data);
+            }
+        });
+
+        $scope.sendMessage = function () {
+            if ( !$scope.model.userName ) {
+                alert('Enter a user name!');
+            }
+            if ( $scope.model.currentMsg ) {
+                socket.emit('send', {
+                    message: $scope.model.currentMsg,
+                    timeStamp: (new Date()).toISOString(),
+                    user: $scope.model.userName
+                   });
+                $scope.model.currentMsg = '';
+            }
+        }
+    }
+</script>
+</body>
+</html>

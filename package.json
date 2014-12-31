@@ -1,0 +1,10 @@
+{
+    "name": "ngChat",
+    "version": "0.1.0",
+    "description": "Real time web chat",
+    "dependencies": {
+        "socket.io": "latest",
+        "express": "latest"
+    },
+    "author": "pmeijer"
+}
