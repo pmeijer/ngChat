@@ -2,22 +2,15 @@ ngChat
 ======
 An simple chat using expressjs, socket.io and angular.
 
-The server code is based on the tutorial at:
-
-`http://code.tutsplus.com/tutorials/real-time-chat-with-nodejs-socketio-and-expressjs--net-31708`
+The server code is based on the tutorial
+[Real Time Chat With NodeJS, Socket.io and ExpressJS](http://code.tutsplus.com/tutorials/real-time-chat-with-nodejs-socketio-and-expressjs--net-31708).
 
 ## Usage ##
 
-Download nodejs and npm package.
+Download [nodejs](http://nodejs.org/).
 
-Install dependencies:
+Install dependencies: `npm install`
 
-`npm install`
+Start the server: `node app.js`
 
-Start the server:
-
-`node app.js`
-
-From browswe visit:
-
-`localhost:3700`
+From browser visit: `localhost:3700`
