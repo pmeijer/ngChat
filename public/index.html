@@ -5,57 +5,22 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 </head>
-<body>
+<body ng-app="ngChat">
 
-<div ng-app="" ng-controller="ChatController">
-
+<div ng-controller="GlobalChatController">
     Name: <input type="text" ng-model="model.userName"><br>
+    Room: <input type="text" ng-disabled="model.inRoom" ng-model="model.room">
+          <input type="checkbox" ng-model="model.inRoom" ng-change="joinLeaveRoom()"><br> In room
     <ul>
         <li ng-Repeat="msg in model.messages">
-            [{{ msg.user }}] - {{ msg.message }}
+            <{{ msg.room }}>[{{ msg.user }}] - {{ msg.message }}
         </li>
     </ul>
     <form ng-submit="sendMessage()">
         <input type="text" ng-model="model.currentMsg"><button ng-click="sendMessage()">Send</button>
+        <input type="checkbox" ng-disabled="!model.inRoom" ng-model="model.toRoom"> to {{model.room}}<br>
     </form>
 </div>
-
-<script>
-    function ChatController($scope, $timeout) {
-        var socket = io.connect('http://localhost:3700');
-
-        $scope.model = {
-            userName: 'user' + Math.floor(Math.random()*1000).toString(),
-            messages: [],
-            currentMsg: ''
-        };
-        socket.on('message', function (data) {
-            console.log('got message!');
-            if ( data.message ) {
-                data.user = data.user || 'SERVER';
-                $scope.model.messages.push(data);
-                // Angular is unaware of data updates outside the "angular world,
-                // the timeout will force a new digest cycle.
-                $timeout(function () {}); 
-            } else {
-                console.error("There is a problem: ", data);
-            }
-        });
-
-        $scope.sendMessage = function () {
-            if ( !$scope.model.userName ) {
-                alert('Enter a user name!');
-            }
-            if ( $scope.model.currentMsg ) {
-                socket.emit('send', {
-                    message: $scope.model.currentMsg,
-                    timeStamp: (new Date()).toISOString(),
-                    user: $scope.model.userName
-                   });
-                $scope.model.currentMsg = '';
-            }
-        }
-    }
-</script>
+<script src="module.js"></script>
 </body>
 </html>

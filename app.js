@@ -17,10 +17,30 @@ var startServer = function () {
 
     io.sockets.on('connection', function (socket) {
         console.log('New client connected!');
-        socket.emit('message', { message: 'welcome to the chat', timeStamp: (new Date()).toISOString()});
-        socket.on('send', function (data) {
-            console.log('MUHAHA I read all the messages: \n', data);
-            io.sockets.emit('message', data);
+        socket.emit('message', {
+            message: 'Welcome to the chat',
+            room: 'Global',
+            timeStamp: (new Date()).toISOString()});
+
+        socket.on('subscribe', function(room) {
+            console.log('joining room', room);
+            socket.join(room);
+        });
+
+        socket.on('unsubscribe', function(room) {
+            console.log('leaving room', room);
+            socket.leave(room);
+        });
+
+        socket.on('send', function(data) {
+            console.log(data.user, data.message, data.room);
+            if (data.room) {
+                io.sockets.in(data.room).emit('message', data);
+            } else {
+                // This is a global message
+                data.room = 'Global';
+                io.sockets.emit('message', data);
+            }
         });
     });
 
