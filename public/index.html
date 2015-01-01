@@ -10,10 +10,13 @@
 <div ng-controller="GlobalChatController">
     Name: <input type="text" ng-model="model.userName"><br>
     Room: <input type="text" ng-disabled="model.inRoom" ng-model="model.room">
-          <input type="checkbox" ng-model="model.inRoom" ng-change="joinLeaveRoom()"><br> In room
+          <input type="checkbox" ng-model="model.inRoom" ng-change="joinLeaveRoom()"><br><br>
+    <button ng-click="clearMessages()">Clear Messages</button>
     <ul>
         <li ng-Repeat="msg in model.messages">
-            <{{ msg.room }}>[{{ msg.user }}] - {{ msg.message }}
+            <div ng-if="msg.fromMe" style="color:grey"> [{{ msg.user }}]<{{ msg.room }}> - {{ msg.message }} </div>
+            <div ng-if="!msg.fromMe && msg.user!=='SERVER'" style="color:blue"> [{{ msg.user }}]<{{ msg.room }}> - {{ msg.message }} </div>
+            <div ng-if="msg.user==='SERVER'" style="color:red"> [{{ msg.user }}]<{{ msg.room }}> - {{ msg.message }} </div>
         </li>
     </ul>
     <form ng-submit="sendMessage()">

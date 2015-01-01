@@ -32,8 +32,8 @@ angular.module('ngChat', [])
 
         $scope.sendMessage = function () {
             var data;
-            if ( !$scope.model.userName ) {
-                alert('Enter a user name!');
+            if ( !$scope.model.userName || $scope.model.userName === 'SERVER') {
+                alert('Enter a valid user name!');
             }
             if ( $scope.model.currentMsg ) {
                 data = {
@@ -47,12 +47,17 @@ angular.module('ngChat', [])
                 }
                 socket.emit('send', data);
                 $scope.model.currentMsg = '';
+                data.fromMe = true;
+                if ( !data.room ) {
+                    data.room = 'Global';
+                }
+                $scope.model.messages.push(data);
             }
         };
 
         $scope.joinLeaveRoom = function () {
             // Don't join an empty named room or reserved '/'
-            if ( !$scope.model.room || $scope.model.room === '/' ) {
+            if ( !$scope.model.room || $scope.model.room === '/' || $scope.model.room === 'Global') {
                 $scope.model.room = '';
                 $scope.model.inRoom = false;
                 $scope.model.toRoom = false;
@@ -69,9 +74,12 @@ angular.module('ngChat', [])
                 $scope.model.toRoom = false;
             }
         };
+        $scope.clearMessages = function () {
+            $scope.model.messages = [];
+        };
     })
     .run(function($rootScope, $window) {
         'use strict';
-        var rootUrl = $window.location.host;
-        $rootScope.socket = io.connect(rootUrl);
+        //var rootUrl = $window.location.host;
+        $rootScope.socket = io.connect(/*rootUrl*/); // <- no need to pass root
     });

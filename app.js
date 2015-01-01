@@ -35,11 +35,11 @@ var startServer = function () {
         socket.on('send', function(data) {
             console.log(data.user, data.message, data.room);
             if (data.room) {
-                io.sockets.in(data.room).emit('message', data);
+                socket.broadcast.to(data.room).emit('message', data);
             } else {
                 // This is a global message
                 data.room = 'Global';
-                io.sockets.emit('message', data);
+                socket.broadcast.emit('message', data);
             }
         });
     });
