@@ -1,4 +1,4 @@
-/*globals require, console, module*/
+/*globals require, console, module, __dirname*/
 /**
  * Created by pmeijer on 12/30/2014.
  */
@@ -12,7 +12,7 @@ var startServer = function () {
         io,
         app = express();
 
-    app.use(express.static('./public/'));
+    app.use('/', express.static(__dirname + '/public/'));
     io = socketIO.listen(app.listen(PORT));
 
     io.sockets.on('connection', function (socket) {
