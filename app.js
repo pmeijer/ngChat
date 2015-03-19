@@ -23,13 +23,26 @@ var startServer = function () {
             timeStamp: (new Date()).toISOString()});
 
         socket.on('subscribe', function(room) {
-            console.log('joining room', room);
+            console.log('====== JOIN =======');
+            console.log('Nbr of rooms: ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            console.log('joining room', socket.id);
             socket.join(room);
+            console.log(room + ' has nbr of users: ' + Object.keys(io.nsps['/'].adapter.rooms[room]).length);
+            console.log('Nbr of rooms: ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            console.log('====== JOIN =======\n');
+            //}
         });
 
         socket.on('unsubscribe', function(room) {
-            console.log('leaving room', room);
+            console.log('====== LEAVE =======');
+            console.log('Nbr of rooms: ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            console.log('leaving room: ', socket.id);
             socket.leave(room);
+            if (io.nsps['/'].adapter.rooms[room]) {
+                console.log(room + ' has nbr of users: ' + Object.keys(io.nsps['/'].adapter.rooms[room]).length);
+            }
+            console.log('Nbr of rooms: ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            console.log('====== LEAVE =======\n');
         });
 
         socket.on('send', function(data) {
@@ -42,8 +55,12 @@ var startServer = function () {
                 socket.broadcast.emit('message', data);
             }
         });
+        
+        socket.on('disconnect', function() { 
+            console.log(socket.id + ' disconnected');
+        });
     });
-
+    
     console.log('listening on port: ', PORT);
 };
 
