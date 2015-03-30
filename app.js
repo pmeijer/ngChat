@@ -3,7 +3,7 @@
  * Created by pmeijer on 12/30/2014.
  */
 
-var PORT = 3700;
+var PORT = 8080;
 
 var startServer = function () {
     'use strict';
