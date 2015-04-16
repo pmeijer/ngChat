@@ -13,4 +13,11 @@ Install dependencies: `npm install`
 
 Start the server: `node app.js`
 
-From browser visit: `localhost:3700`
+From browser visit: `localhost:8080`
+
+
+Create an empty logs and temp directory.
+
+`\Users\Zsolt\Downloads\nginx-1.6.3\nginx-1.6.3\nginx.exe -c nginx.conf`
+
+From browser visit: `localhost:8000`
