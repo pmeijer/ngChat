@@ -3,9 +3,11 @@
  * Created by pmeijer on 12/30/2014.
  */
 
-var PORT = 8080;
+var PORT = 8080,
+    NUM_SERVERS = 5,
+    i;
 
-var startServer = function () {
+var startServer = function (port) {
     'use strict';
     var express = require('express'),
         socketIO = require('socket.io'),
@@ -13,10 +15,10 @@ var startServer = function () {
         app = express();
 
     app.use('/', express.static(__dirname + '/public/'));
-    io = socketIO.listen(app.listen(PORT));
+    io = socketIO.listen(app.listen(port));
 
     io.sockets.on('connection', function (socket) {
-        console.log('New client connected!');
+        console.log(port + ' New client connected!');
         socket.emit('message', {
             message: 'Welcome to the chat',
             room: 'Global',
@@ -57,13 +59,15 @@ var startServer = function () {
         });
         
         socket.on('disconnect', function() { 
-            console.log(socket.id + ' disconnected');
+            console.log(port + ' ' + socket.id + ' disconnected');
         });
     });
     
-    console.log('listening on port: ', PORT);
+    console.log('listening on port: ', port);
 };
 
 if (require.main === module) {
-    startServer();
+    for (i = 0; i < NUM_SERVERS; i += 1) {
+        startServer(PORT + i);
+    }
 }
