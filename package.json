@@ -1,10 +1,12 @@
 {
-    "name": "ngChat",
-    "version": "0.1.0",
-    "description": "Real time web chat",
-    "dependencies": {
-        "socket.io": "latest",
-        "express": "latest"
-    },
-    "author": "pmeijer"
+  "name": "ngChat",
+  "version": "0.1.0",
+  "description": "Real time web chat",
+  "dependencies": {
+    "express": "latest",
+    "redis": "^0.12.1",
+    "socket.io": "latest",
+    "socket.io-redis": "^0.1.4"
+  },
+  "author": "pmeijer"
 }

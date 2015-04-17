@@ -12,13 +12,20 @@ var startServer = function (port) {
     var express = require('express'),
         socketIO = require('socket.io'),
         io,
+        adapter,
+        server,
         app = express();
 
     app.use('/', express.static(__dirname + '/public/'));
-    io = socketIO.listen(app.listen(port));
+    server = app.listen(port);
+    io = socketIO.listen(server);
+    adapter = require('socket.io-redis')({host:'127.0.0.1', port:6379});
+    io.adapter(adapter);
+    var sockets = [];
 
     io.sockets.on('connection', function (socket) {
         console.log(port + ' New client connected!');
+        sockets.push(socket);
         socket.emit('message', {
             message: 'Welcome to the chat',
             room: 'Global',
@@ -48,7 +55,7 @@ var startServer = function (port) {
         });
 
         socket.on('send', function(data) {
-            console.log(data.user, data.message, data.room);
+            console.log(port, data.user, data.message, data.room);
             if (data.room) {
                 socket.broadcast.to(data.room).emit('message', data);
             } else {
@@ -64,6 +71,15 @@ var startServer = function (port) {
     });
     
     console.log('listening on port: ', port);
+    if (port === PORT) {
+        setTimeout(function () {
+            console.log('closing', PORT);
+            server.close();
+            sockets.forEach(function(socket){
+                socket.disconnect(true);
+            });
+        }, 10000);
+    }
 };
 
 if (require.main === module) {
