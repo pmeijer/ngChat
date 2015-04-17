@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <title>Real time web chat supervisor</title>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+    <meta name="viewport" content="initial-scale=1" />
+    <style>
+        body {
+            padding: 5ex;
+        }
+
+        .chat-servers {
+            padding: 1ex;
+        }
+
+    </style>
+</head>
+<body ng-app="ngChatSupervisor">
+
+<div ng-controller="SupervisorController" layout="column" layout-align="start start" layout-fill>
+    <form layout="column" layout-align="start start" layout-fill>
+        <md-input-container flex>
+            <label>Server address</label><input type="text" ng-model="address">
+        </md-input-container>
+        <md-button md-no-ink class="md-primary"  ng-click="addServer()">Add</md-button>
+    </form>
+
+    <div ng-repeat="server in servers">
+
+        <md-toolbar class="md-primary">
+            <div class="md-toolbar-tools">
+                <h2 class="md-flex">{{server.address}}</h2>
+            </div>
+        </md-toolbar>
+        <div layout="row">
+            <md-button class="md-warn" ng-click="removeServer(server.address)">Delete</md-button>
+            <md-button class="md-primary" ng-click="createChatServer(server.address, server.newPort)">Create</md-button>
+            <md-input-container>
+                <label>Chat server port</label><input required type="number" step="1" min="8081" max="9999" ng-model="server.newPort">
+            </md-input-container>
+        </div>
+
+        <div ng-if="server.status === 200" class="chat-servers">
+            <div ng-repeat="chatServer in server.data">{{chatServer.port}} Online:{{chatServer.online}}
+                <md-button class="md-primary" ng-disabled="chatServer.online" ng-click="startChatServer(server.address, chatServer.port)">Start</md-button>
+                <md-button class="md-primary" ng-disabled="!chatServer.online" ng-click="stopChatServer(server.address, chatServer.port)">Stop</md-button>
+                <md-button class="md-warn" ng-click="deleteChatServer(server.address, chatServer.port)">Delete</md-button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Angular Material Dependencies -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.8.3/angular-material.min.js"></script>
+
+<script src="module.js"></script>
+</body>
+</html>
