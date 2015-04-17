@@ -14,6 +14,7 @@ var PORT = 8080,
     i;
 
 var ChatServer = function (port) {
+    this.running = false;
     this.port = port;
     this.server = null;
     this.logger = debug('ngChat:' + port);
@@ -36,7 +37,7 @@ ChatServer.prototype.start = function () {
     app.use('/', express.static(__dirname + '/public/'));
     this.server = app.listen(this.port);
     io = socketIO.listen(this.server);
-
+    this.running = true;
     pub = redis.createClient(redisPort, redisHost);
     sub = redis.createClient(redisPort, redisHost, { detect_buffers: true });
     pub.on('error', function (err) {
@@ -55,7 +56,8 @@ ChatServer.prototype.start = function () {
     io.adapter(adapter);
 
     io.sockets.on('connection', function (socket) {
-        logger('New client connected' + socket.id);
+        var address = socket.request.connection.remoteAddress;
+        logger('Client connected from ' + address + ' socket.id: ' + socket.id);
         sockets.push(socket);
         socket.emit('message', {
             message: 'Welcome to the chat',
@@ -98,7 +100,7 @@ ChatServer.prototype.start = function () {
         });
 
         socket.on('disconnect', function () {
-            logger(socket.id + ' disconnected');
+            logger('Client disconnect ' + address + ' (' + socket.id + ')');
         });
     });
 
@@ -108,9 +110,14 @@ ChatServer.prototype.start = function () {
 ChatServer.prototype.stop = function () {
     this.logger('closing');
     this.server.close();
+    this.running = false;
     this.sockets.forEach(function (socket) {
         socket.disconnect(true);
     });
+};
+
+ChatServer.prototype.isRunning = function () {
+    return this.running;
 };
 
 
