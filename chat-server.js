@@ -131,7 +131,7 @@ ChatServer.prototype.stop = function () {
         if (this.namespaces.hasOwnProperty(namespace)) {
             this.namespaces[namespace].sockets.forEach(function (socket) {
                 self.logger('socket will be destroyed', socket.id);
-                socket.destroy();
+                //socket.destroy();
             });
         }
     }
