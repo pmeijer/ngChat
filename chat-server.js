@@ -71,7 +71,7 @@ ChatServer.prototype.addNamespace = function (name) {
     };
 
     nsp.on('connection', function (socket) {
-        var address = socket.handshake.address;
+        var address = socket.handshake.headers['x-real-ip'] || socket.handshake.address;
         logger('Client "' + socket.id + '" connected from ' + address);
         self.namespaces[name].sockets.push(socket);
         socket.emit('message', {

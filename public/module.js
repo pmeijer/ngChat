@@ -11,6 +11,8 @@ angular.module('ngChat', ['ngMaterial'])
         $scope.model = {
             userName: 'user' + Math.floor(Math.random()*1000).toString(),
             messages: [],
+            namespaces: ['', 'Europe', 'Americas', 'Asia', 'Africa'],
+            namespace: '',
             room: null,
             inRoom: false,
             toRoom: false,
@@ -80,6 +82,5 @@ angular.module('ngChat', ['ngMaterial'])
     })
     .run(function($rootScope, $window) {
         'use strict';
-        //var rootUrl = $window.location.host;
-        $rootScope.socket = io.connect('/Europe');
+        $rootScope.socket = io.connect('/');
     });
