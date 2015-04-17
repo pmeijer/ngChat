@@ -81,5 +81,5 @@ angular.module('ngChat', ['ngMaterial'])
     .run(function($rootScope, $window) {
         'use strict';
         //var rootUrl = $window.location.host;
-        $rootScope.socket = io.connect(/*rootUrl*/); // <- no need to pass root
+        $rootScope.socket = io.connect('/Europe');
     });
