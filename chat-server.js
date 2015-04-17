@@ -121,7 +121,8 @@ ChatServer.prototype.addNamespace = function (name) {
 };
 
 ChatServer.prototype.stop = function () {
-    var namespace;
+    var namespace,
+        self = this;
     this.logger('closing');
     this.server.close();
     this.running = false;
@@ -129,7 +130,8 @@ ChatServer.prototype.stop = function () {
     for (namespace in this.namespaces) {
         if (this.namespaces.hasOwnProperty(namespace)) {
             this.namespaces[namespace].sockets.forEach(function (socket) {
-                socket.disconnect(true);
+                self.logger('socket will be disconnected', socket);
+                //socket.disconnect(true);
             });
         }
     }

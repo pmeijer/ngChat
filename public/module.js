@@ -79,6 +79,10 @@ angular.module('ngChat', ['ngMaterial'])
         $scope.clearMessages = function () {
             $scope.model.messages = [];
         };
+
+        socket.on('disconnect', function () {
+            console.log('disconnected');
+        });
     })
     .run(function($rootScope, $window) {
         'use strict';
