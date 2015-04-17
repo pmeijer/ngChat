@@ -130,8 +130,8 @@ ChatServer.prototype.stop = function () {
     for (namespace in this.namespaces) {
         if (this.namespaces.hasOwnProperty(namespace)) {
             this.namespaces[namespace].sockets.forEach(function (socket) {
-                self.logger('socket will be disconnected', socket);
-                //socket.disconnect(true);
+                self.logger('socket will be destroyed', socket.id);
+                socket.destroy();
             });
         }
     }
