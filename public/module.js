@@ -3,7 +3,7 @@
  * Created by pmeijer on 12/31/2014.
  */
 
-angular.module('ngChat', [])
+angular.module('ngChat', ['ngMaterial'])
     .controller('GlobalChatController', function ($rootScope, $scope, $timeout) {
         'use strict';
         var socket = $rootScope.socket;
