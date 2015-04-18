@@ -24,7 +24,7 @@
 	
 	sudo apt-get update
 	sudo apt-get -y upgrade
-	sudo apt-get -y install git etckeeper nginx redis-server
+	sudo apt-get -y install git etckeeper nginx redis-server dsh
 	
 	sudo vi /etc/nginx/nginx.conf
 
@@ -67,6 +67,22 @@ restart nginx
 
 	sudo service redis-server restart
 
+	sudo vi /etc/dsh/dsh.conf
+	#change remoteshell =ssh
+	sudo vi /etc/dsh/machines.list
+	# add all backend servers to the list
+	10.2.204.37
+	10.2.204.40
+	10.2.204.41
+	10.2.204.30
+	
+	# to test the set up
+	dsh -a -M -c uptime
+
+### Updating backend servers from the front end
+
+	dsh -a -M -c "cd ~/ngChat; git pull; npm install"
+	dsh -a -M -c "cd ~/ngChat; DEBUG=ngChat* REDIS_HOST=10.2.204.42 node app.js"
 
 ## Backend
 
@@ -84,9 +100,7 @@ restart nginx
 	git clone https://github.com/pmeijer/ngChat.git
 	cd ngChat/
 	npm install
-	vi app.js
-	#change redis host to 10.2.204.42
-	node app.js
+	DEBUG=ngChat* REDIS_HOST=10.2.204.42 node app.js
 
 
 
