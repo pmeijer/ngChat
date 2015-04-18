@@ -16,6 +16,14 @@
     
 ## Frontend
 
+### Updating backend servers from the frontend
+
+Assuming you have already setup everything.
+
+	dsh -a -M -c "cd ~/ngChat; git pull; npm install"
+	dsh -a -M -c "cd ~/ngChat; DEBUG=ngChat* REDIS_HOST=10.2.204.42 node app.js"
+
+
 ### Setup
 
 	vi ~/.ssh/authorized_keys
@@ -79,10 +87,6 @@ restart nginx
 	# to test the set up
 	dsh -a -M -c uptime
 
-### Updating backend servers from the front end
-
-	dsh -a -M -c "cd ~/ngChat; git pull; npm install"
-	dsh -a -M -c "cd ~/ngChat; DEBUG=ngChat* REDIS_HOST=10.2.204.42 node app.js"
 
 ## Backend
 
