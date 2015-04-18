@@ -24,7 +24,7 @@
         <md-input-container flex>
             <label>Server address</label><input type="text" ng-model="address">
         </md-input-container>
-        <md-button md-no-ink class="md-primary"  ng-click="addServer()">Add</md-button>
+        <md-button md-no-ink class="md-primary"  ng-click="addServer()">Add to list</md-button>
     </form>
 
     <div ng-repeat="server in servers">
@@ -35,8 +35,8 @@
             </div>
         </md-toolbar>
         <div layout="row">
-            <md-button class="md-warn" ng-click="removeServer(server.address)">Delete</md-button>
-            <md-button class="md-primary" ng-click="createChatServer(server.address, server.newPort)">Create</md-button>
+            <md-button class="md-warn" ng-click="removeServer(server.address)">Remove from list</md-button>
+            <md-button class="md-primary" ng-click="createChatServer(server.address, server.newPort)">Create new chet server</md-button>
             <md-input-container>
                 <label>Chat server port</label><input required type="number" step="1" min="8081" max="9999" ng-model="server.newPort">
             </md-input-container>

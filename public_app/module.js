@@ -4,10 +4,10 @@
  */
 
 angular.module('ngChatSupervisor', ['ngMaterial'])
-    .controller('SupervisorController', function ($rootScope, $scope, $interval, $http) {
+    .controller('SupervisorController', function ($rootScope, $scope, $interval, $http, $window) {
         'use strict';
 
-        $scope.address = 'http://localhost:8080';
+        $scope.address = $window.location.origin;
 
         $scope.servers = {};
 
