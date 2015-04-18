@@ -40,6 +40,21 @@ ChatServer.prototype.start = function () {
     this.io = socketIO.listen(this.server);
     this.running = true;
 
+
+    this.server.on('connection', function (socket) {
+        var socketId = socket.remoteAddress + ':' + socket.remotePort;
+
+        self.sockets[socketId] = socket;
+        self.logger('socket connected (added to list) ' + socketId);
+
+        socket.on('close', function () {
+            if (self.sockets.hasOwnProperty(socketId)) {
+                self.logger('socket closed (removed from list) ' + socketId);
+                delete self.sockets[socketId];
+            }
+        });
+    });
+
     // setup adapter to redis
     pub = redis.createClient(redisPort, redisHost);
     sub = redis.createClient(redisPort, redisHost, { detect_buffers: true });
@@ -122,19 +137,32 @@ ChatServer.prototype.addNamespace = function (name) {
 
 ChatServer.prototype.stop = function () {
     var namespace,
+        key,
         self = this;
     this.logger('closing');
-    this.server.close();
-    this.running = false;
+    this.server.close(function () {
+        self.running = false;
+    });
 
-    for (namespace in this.namespaces) {
-        if (this.namespaces.hasOwnProperty(namespace)) {
-            this.namespaces[namespace].sockets.forEach(function (socket) {
-                self.logger('socket will be destroyed', socket.id);
-                //socket.destroy();
-            });
+    for (key in self.sockets) {
+        if (self.sockets.hasOwnProperty(key)) {
+            self.sockets[key].destroy();
+            delete self.sockets[key];
+            self.logger('destroyed open socket ' + key);
+            //numDestroyedSockets += 1;
         }
     }
+
+    //for (namespace in this.namespaces) {
+    //    if (this.namespaces.hasOwnProperty(namespace)) {
+    //        this.namespaces[namespace].sockets.forEach(function (socket) {
+    //            self.logger('socket will be destroyed', socket.id);
+    //            console.log(socket);
+    //            //socket.client.destroy();
+    //            //socket.disconnect(false);
+    //        });
+    //    }
+    //}
 };
 
 ChatServer.prototype.isRunning = function () {

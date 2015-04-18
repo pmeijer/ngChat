@@ -4,7 +4,7 @@
  */
 
 angular.module('ngChat', ['ngMaterial'])
-    .controller('GlobalChatController', function ($rootScope, $scope, $timeout) {
+    .controller('GlobalChatController', function ($rootScope, $scope, $timeout, $window) {
         'use strict';
         var socket = $rootScope.socket;
 
@@ -86,5 +86,10 @@ angular.module('ngChat', ['ngMaterial'])
     })
     .run(function($rootScope, $window) {
         'use strict';
-        $rootScope.socket = io.connect('/');
+        var rootUrl = $window.location.host;
+        $rootScope.socket = io.connect(rootUrl + '/');//, {
+        //    reconnection: true,
+        //    reconnectionDelay: 200,
+        //    reconnectionDelayMax: 500
+        //});
     });
