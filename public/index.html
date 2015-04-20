@@ -52,6 +52,10 @@
             <label>Room</label><input type="text" ng-disabled="model.inRoom" ng-model="model.room">
         </md-input-container>
         <md-checkbox ng-model="model.inRoom" ng-change="joinLeaveRoom()"></md-checkbox>
+        <md-radio-group ng-model="model.selectedNamespace">
+            <md-radio-button ng-repeat='nsp in model.namespaces' value="{{nsp.id}}">{{nsp.name}}</md-radio-button>
+            <md-button ng-disabled="model.selectedNamespace === model.namespace" md-no-ink class="md-primary" ng-click="switchNsp()">Switch Namespace</md-button>
+        </md-radio-group>
         <md-button md-no-ink class="md-primary" ng-click="clearMessages()">Clear Messages</md-button>
     </div>
 

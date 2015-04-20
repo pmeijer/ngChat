@@ -11,7 +11,7 @@ var PORT = 8080,
     redisHost = process.env.REDIS_HOST || '127.0.0.1',
     redisPort = 6379,
     debug = require('debug'),
-    NSPS = ['', 'Europe', 'Americas', 'Asia', 'Africa'],
+    NSPS = ['Europe', 'Americas', 'Asia', 'Africa'],
     i;
 
 var ChatServer = function (port) {
@@ -21,7 +21,6 @@ var ChatServer = function (port) {
     this.io = null;
     this.logger = debug('ngChat:' + port);
     this.sockets = [];
-    this.namespaces = {};
 };
 
 ChatServer.prototype.start = function () {
@@ -78,44 +77,52 @@ ChatServer.prototype.start = function () {
 
 ChatServer.prototype.addNamespace = function (name) {
     var self = this,
-        logger = debug('ngChat:' + self.port + ':' + name),
+        logger = debug('ngChat:' + self.port + ':nsp:' + name),
         nsp = self.io.of('/' + name);
-    this.namespaces[name] = {
-        sockets: [],
-        nsp: nsp
-    };
 
     nsp.on('connection', function (socket) {
         var address = socket.handshake.headers['x-real-ip'] || socket.handshake.address;
-        logger('Client "' + socket.id + '" connected from ' + address);
-        self.namespaces[name].sockets.push(socket);
-        socket.emit('message', {
-            message: 'Welcome to the chat, you are in the namespace: "' + name + '"',
-            room: 'Global',
-            timeStamp: (new Date()).toISOString()
-        });
-
+        logger('--- Connection ' + name + ' ---');
+        logger('Socket id             : ' + socket.id);
+        logger('Client address        : ' + address);
+        logger('Nbr of clients in nsp : ' + nsp.sockets.length);
+        logger('Nbr of clients (total): ' + self.io.sockets.sockets.length);
+        logger('----- Connection -----\n');
         socket.on('subscribe', function (room) {
-            logger('====== JOIN ' + room + '=======');
-            logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
-            logger('joining room, socket:' + socket.id);
+            logger('===== JOIN ' + room + '======');
+            logger('Nbr of rooms (pre)  : ' + Object.keys(nsp.adapter.rooms).length);
+            logger('Socket id           : ' + socket.id);
             socket.join(room);
-            logger('Nbr of users        : ' + Object.keys(nsp.adapter.rooms[room]).length);
+            logger('Nbr of users (room) : ' + Object.keys(nsp.adapter.rooms[room]).length);
             logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
             logger('====== JOIN =======\n');
+            socket.emit('message', {
+                message: 'Joined room "' + room + '"',
+                room: 'Global',
+                nsp: name,
+                timeStamp: (new Date()).toISOString()
+            });
             //}
         });
 
         socket.on('unsubscribe', function(room) {
-            logger('====== LEAVE ' + room + '=======');
-            logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
-            logger('leaving room, socket: ' + socket.id);
+            logger('===== LEAVE ' + room + '======');
+            logger('Nbr of rooms (pre)  : ' + Object.keys(nsp.adapter.rooms).length);
+            logger('Socket id           : ' + socket.id);
             socket.leave(room);
             if (nsp.adapter.rooms[room]) {
-                logger('Nbr of users      : ' + Object.keys(nsp.adapter.rooms[room]).length);
+                logger('Nbr of users (room) : ' + Object.keys(nsp.adapter.rooms[room]).length);
+            } else {
+                logger('Nbr of users (room) : 0 -> room will be destroyed.');
             }
             logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
             logger('====== LEAVE =======\n');
+            socket.emit('message', {
+                message: 'Left room "' + room + '"',
+                room: 'Global',
+                nsp: name,
+                timeStamp: (new Date()).toISOString()
+            });
         });
 
         socket.on('send', function (data) {
@@ -132,12 +139,18 @@ ChatServer.prototype.addNamespace = function (name) {
         socket.on('disconnect', function () {
             logger('Client "' + socket.id + '" from ' + address + ' disconnected');
         });
+
+        socket.emit('message', {
+            message: 'Welcome you are in the namespace: "' + name + '"',
+            room: 'Global',
+            nsp: name,
+            timeStamp: (new Date()).toISOString()
+        });
     });
 };
 
 ChatServer.prototype.stop = function () {
-    var namespace,
-        key,
+    var key,
         self = this;
     this.logger('closing');
     this.server.close(function () {
@@ -152,17 +165,6 @@ ChatServer.prototype.stop = function () {
             //numDestroyedSockets += 1;
         }
     }
-
-    //for (namespace in this.namespaces) {
-    //    if (this.namespaces.hasOwnProperty(namespace)) {
-    //        this.namespaces[namespace].sockets.forEach(function (socket) {
-    //            self.logger('socket will be destroyed', socket.id);
-    //            console.log(socket);
-    //            //socket.client.destroy();
-    //            //socket.disconnect(false);
-    //        });
-    //    }
-    //}
 };
 
 ChatServer.prototype.isRunning = function () {
