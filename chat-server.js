@@ -97,24 +97,24 @@ ChatServer.prototype.addNamespace = function (name) {
 
         socket.on('subscribe', function (room) {
             logger('====== JOIN ' + room + '=======');
-            logger('Nbr of rooms        : ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
             logger('joining room, socket:' + socket.id);
             socket.join(room);
-            logger('Nbr of users        : ' + Object.keys(io.nsps['/'].adapter.rooms[room]).length);
-            logger('Nbr of rooms        : ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            logger('Nbr of users        : ' + Object.keys(nsp.adapter.rooms[room]).length);
+            logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
             logger('====== JOIN =======\n');
             //}
         });
 
         socket.on('unsubscribe', function(room) {
             logger('====== LEAVE ' + room + '=======');
-            logger('Nbr of rooms        : ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
             logger('leaving room, socket: ' + socket.id);
             socket.leave(room);
-            if (io.nsps['/'].adapter.rooms[room]) {
-                logger('Nbr of users      : ' + Object.keys(io.nsps['/'].adapter.rooms[room]).length);
+            if (nsp.adapter.rooms[room]) {
+                logger('Nbr of users      : ' + Object.keys(nsp.adapter.rooms[room]).length);
             }
-            logger('Nbr of rooms        : ' + Object.keys(io.nsps['/'].adapter.rooms).length);
+            logger('Nbr of rooms        : ' + Object.keys(nsp.adapter.rooms).length);
             logger('====== LEAVE =======\n');
         });
 
