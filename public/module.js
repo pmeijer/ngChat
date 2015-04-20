@@ -16,6 +16,7 @@ angular.module('ngChat', ['ngMaterial'])
             room: null,
             inRoom: false,
             toRoom: false,
+            disconnected: false,
             currentMsg: ''
         };
 
@@ -26,6 +27,13 @@ angular.module('ngChat', ['ngMaterial'])
                 $scope.model.messages.push(data);
                 // Angular is unaware of data updates outside the "angular world,
                 // the timeout will force a new digest cycle.
+                if ($scope.model.disconnected === true) {
+                    $scope.model.disconnected = false;
+                    if ($scope.model.inRoom) {
+                        socket.emit('subscribe', $scope.model.room);
+                        console.log('Joined room :',  $scope.model.room);
+                    }
+                }
                 $timeout(function () {});
             } else {
                 console.error('There is a problem: ', data);
@@ -82,6 +90,7 @@ angular.module('ngChat', ['ngMaterial'])
 
         socket.on('disconnect', function () {
             console.log('disconnected');
+            $scope.model.disconnected = true;
         });
     })
     .run(function($rootScope, $window) {
