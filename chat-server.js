@@ -7,7 +7,7 @@
 'use strict';
 
 var PORT = 8080,
-    NUM_SERVERS = 5,
+    NUM_SERVERS = 1,
     redisHost = process.env.REDIS_HOST || '127.0.0.1',
     redisPort = 6379,
     debug = require('debug'),
@@ -66,6 +66,9 @@ ChatServer.prototype.start = function () {
     });
     this.io.adapter(adapter);
 
+    //for (var i = 0; i < 10000; i += 1) {
+    //    NSPS.push('nsp_' + i.toString());
+    //}
     // add namespaces for socket io
     NSPS.forEach(function (name) {
         self.logger('adding namespace', name);

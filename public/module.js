@@ -78,7 +78,8 @@ angular.module('ngChat', ['ngMaterial'])
                     user: $scope.model.userName,
                     room: null
                 };
-                if ($scope.model.toRoom && $scope.model.inRoom && $scope.model.room) {
+                //if ($scope.model.toRoom && $scope.model.inRoom && $scope.model.room) {
+                if ($scope.model.toRoom && $scope.model.room) {
                     data.room = $scope.model.room;
                 }
                 socket.emit('send', data);
@@ -120,7 +121,10 @@ angular.module('ngChat', ['ngMaterial'])
             $scope.model.inRoom = false;
             $scope.model.toRoom = false;
             $scope.model.room = 'master';
+
             socket.disconnect();
+            // Uncomment line below and comment out line above to keep the user in the previous name space too.
+            //registerOnEvents(io.connect($rootScope.rootUrl + $scope.model.namespace, {forceNew: true}));
         };
 
         registerOnEvents(io.connect($rootScope.rootUrl + $scope.model.namespace));
