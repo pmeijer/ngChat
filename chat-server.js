@@ -7,7 +7,7 @@
 'use strict';
 
 var PORT = 8080,
-    NUM_SERVERS = 1,
+    NUM_SERVERS = 5,
     redisHost = process.env.REDIS_HOST || '127.0.0.1',
     redisPort = 6379,
     debug = require('debug'),
