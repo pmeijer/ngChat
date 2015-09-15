@@ -1,5 +1,5 @@
 ngChat
-======
+=======
 A simple chat using expressjs, socket.io and angularjs.
 
 The initial server code is based on the tutorial
