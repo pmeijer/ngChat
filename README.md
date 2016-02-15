@@ -21,3 +21,4 @@ Create an empty logs and temp directory.
 `\Users\Zsolt\Downloads\nginx-1.6.3\nginx-1.6.3\nginx.exe -c nginx.conf`
 
 From browser visit: `localhost:8000`
+
