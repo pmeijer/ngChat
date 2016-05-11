@@ -7,7 +7,7 @@ var ChatServer = require('./chat-server'),
     chatServer,
     chatServers = {},
 
-    PORT = process.env.PORT || 8080,
+    PORT = process.env.PORT || 8082,
     debug = require('debug'),
     logger = debug('ngChat:supervisor'),
     express = require('express'),
